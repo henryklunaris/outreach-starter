@@ -1,6 +1,6 @@
 # VAIB Warm Outreach Starter
 
-The only warm outreach workflow you need for VAIB.
+The only warm outreach workflow you need for [VAIB](https://voiceaibootcamp.com/)
 
 ## What this does
 
@@ -13,8 +13,6 @@ You attach a screenshot of someone you know (LinkedIn profile, Instagram, wherev
 5. Reminds you when to follow up.
 
 This is for your warm audience only.
-
-
 
 ## Prerequistes:
 
