@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -m outreach.cli:*)",
+      "Bash(python3 -m outreach.db:*)",
+      "Bash(./setup.sh)",
+      "Bash(./.claude/hooks/accountability.sh)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/accountability.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

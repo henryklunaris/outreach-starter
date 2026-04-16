@@ -1,0 +1,15 @@
+outreach.db
+outreach.db-journal
+outreach.db-wal
+outreach.db-shm
+.env
+.env.local
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+venv/
+.claude/state/
+drafts/*
+PROGRESS.md
+docs/*
