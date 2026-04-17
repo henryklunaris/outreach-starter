@@ -21,11 +21,7 @@ Welcome to the VAIB Warm Outreach Starter.
 
 Looks like this is your first time here, welcome!
 
-Type /activate to get started:
-
-  1. To install the local database.
-  2. Interview you to give you the best experience and chances of success.
-  3. Save a local profile so every future draft sounds like you and your daily nudge surfaces your own commitments.
+Type /activate to get started!
 
 After that, /outreach is your daily workflow. And /coach is always there if you get stuck or have a question.
 EOF
