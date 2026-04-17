@@ -36,29 +36,17 @@ Don't make a big deal of the setup step, it's just plumbing. If `./setup.sh` fai
 
 Before running the interview on a fresh setup (no existing profile), show a short primer so the user knows what's coming and can prep examples in one pass instead of grabbing things mid-interview. Keep it tight, four lines max:
 
-> "Alright, quick heads-up on what we're about to do so you can prep in one go. Should take about 10 minutes.
+> "Alright, quick heads-up this should take about 10 minutes. The goal of this whole set up is to help you do warm outreach.
 >
-> Here's what I'll ask:
+> I'm about to ask you a few questions thats will help me write outreach messages that sound like you.
 >
-> 1. Your name + one casual sentence on what you're up to.
-> 2. Which channels you use most with friends and family (WhatsApp, IG, SMS, etc.).
-> 3. A handful of real messages you've recently sent so I can see how you type (boring ones are perfect). For WhatsApp you can export a full chat as a .txt and drop it in, that's the fastest.
-> 4. A best mate, a friend you see a few times a year, and an old acquaintance, plus one message you'd actually send each.
-> 5. Any words or phrases you'd never say.
-> 6. Roughly how much time per day you realistically have for outreach, so we calibrate the daily volume to your actual life.
+> Privacy note: this is NOT a privacy compliant set up, the conversations are most likely sent to Anthropics servers since we're using Claude Code. So, it up to you, the user, to decide what info you want to provide. 
 >
-> Privacy note: this is NOT a privacy compliant set up, the conversations are most likely sent to Anthropics servers since we're using Claude Code. So, it up to you, the user, to decide what info you want to provide. Do you accept?
+>Do you accept?
 
 Wait for them to confirm (a postivie response like "yep" / "go" / "ready" is fine). If, no then tell them you can't help them.
 
-**After they accepted** you can go to the next step which is to write:
-> Ok thanks, after the initial onboarding, I'll ask you to run `/mindset` separately, it's the mental-model lock-in that goes deeper than I can fit in here.
->
-> Ready to go?"
-
-Wait for them to confirm (a simple "yep" / "go" / "ready" is fine). If they want to tweak or skip anything, accommodate it. Then start the intro.
-
-Skip the primer if routing detected an existing profile (user is updating a specific section or rebuilding and already knows the drill).
+**Skip the primer** if routing detected an existing profile (user is updating a specific section or rebuilding and already knows the drill).
 
 ## Routing (do this first)
 
@@ -66,7 +54,10 @@ Check if `.claude/state/user-profile.json` already exists (`Read` the path, catc
 
 - **File missing** → this is a fresh setup, run the full interview starting with the intro.
 - **File exists** → don't overwrite silently. Show a one-line summary (name, primary channels, activated_at) and ask:
-  > "Looks like you already activated. Want to (1) see what's saved, (2) update just one section, or (3) rebuild from scratch?"
+  > "Looks like you already activated. Want to:
+  >(1) see what's saved
+  >(2) update just one section
+  >(3) rebuild from scratch?"
   - **(1) see**: pretty-print the JSON back to them, stop.
   - **(2) update**: ask which section (intro, channels, voice, tiers, avoid, mindset), run just that section, re-extract affected fields, show diff, save.
   - **(3) rebuild**: start fresh from the intro. Keep the existing file in memory so you can show a diff at the end, but overwrite on save.
@@ -83,7 +74,8 @@ Get:
 - First name.
 - One sentence of what they're up to (this becomes their Stage-1 info-funnel answer later).
 
-> "Alright, quick intro. What's your first name, and in one chill sentence, what are you actually up to? The one-sentence answer you'd give someone at a BBQ if they asked what you do."
+> "Alright, quick intro. What's your first name, and in one chill sentence, what are you actually up to or your goal in the AI space? 
+>The one-sentence answer you'd give someone at a BBQ if they asked what you do."
 
 If they give you LinkedIn-voice ("I leverage AI to empower small businesses..."), gently ask them to retry it the way they'd say it to a mate. This field matters because it gets recycled when warm contacts ask "so what are you up to?".
 
@@ -101,7 +93,7 @@ Anything not named is `not_used`. Don't nag, just record it.
 
 For each channel in `primary`, ask them to paste 3-5 recent real messages they sent to friends or family. Boring ones. Not things they wrote trying to sound cool.
 
-> "For [channel], paste me 3-5 messages you've actually sent to friends or family recently. Boring ones are perfect, confirming a time, asking how they are, replying to a photo. Don't worry about anonymizing, I strip names before saving anyway."
+> "For [channel], paste me 3-5 messages you've actually sent to close friends or family recently. Boring ones are perfect, confirming a time, asking how they are, replying to a photo."
 
 Do one channel at a time. If they paste 1-2 and move on, that's fine, don't gate.
 
@@ -139,7 +131,7 @@ Store as a flat array of strings.
 
 Real talk: the Golden 100 target is aspirational, not everyone can hit it from day one. Someone with a 9-5 and kids has a different ceiling than a student with open evenings. Capture the reality so the tool can set realistic expectations.
 
-> "One more practical one. Roughly how much time per day can you realistically spend on outreach? Be honest, not what you wish you'd do, what you actually have. Could be 20 minutes over coffee, an hour in the evening after the kids are down, just weekends, whatever the real picture is."
+> "One more practical one. Roughly how much time per day can you realistically spend on outreach? Be honest, could be 20 minutes over coffee, an hour in the evening after the kids are down, just weekends, whatever the real picture is."
 
 Follow up once if the answer is vague:
 
@@ -278,8 +270,11 @@ Create the `.claude/state/` directory via `mkdir -p .claude/state` before writin
 
 Tell them where it saved and what to do next:
 
-> "Saved to `.claude/state/user-profile.json`. One more step before `/outreach`: 
-> type `/mindset`. That's the mental-model lock-in, a quick back-and-forth covering the 3 mindset breaks and a few pressure-test scenarios so the method is in your own words. Takes about 10 minutes. If anything about your voice feels off later, type `/activate` again and say 'update' to redo/update a section."
+> "Saved to `.claude/state/user-profile.json`. We're about to to our mindset module. 
+>
+> A quick back-and-forth covering the 3 most common mindset blockers, I'm here to help you get over those and become a master warm outreacher! 
+>
+> Type /mindset"
 
 Don't oversell the outreach skill. Don't summarize what the warm outreach workflow is. They'll see it when they type `/outreach`.
 
