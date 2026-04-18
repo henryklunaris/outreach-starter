@@ -41,15 +41,38 @@ Look at what they sent. If they just typed `/outreach` with nothing else, greet 
 
 From their reply, route:
 
-1. **Image attached (profile screenshot) OR a description of someone new** → **NEW CONTACT mode**
-2. **"list" / "who have I been talking to" / "show my contacts"** → **LIST mode** → run `python3 -m outreach.cli list`
-3. **"due" / "follow-ups" / "what should I do today"** → **DUE mode** → run `python3 -m outreach.cli due`
-4. **References an existing contact and says "I sent this" / "they replied"** → **LOG mode**
-5. **References an existing contact and wants to know what to say next** → **SHOW mode** → run `python3 -m outreach.cli show <id>`
-6. **"help me list who's warm" / "i don't know who to message" / "brainstorm my warm contacts"** → **BRAINSTORM mode** (see below)
-7. **Ambiguous** → ask one short question: "who are we messaging, or do you wanna brainstorm a list first?"
+1. **Image attached (profile screenshot) OR a description of someone new** → **NEW CONTACT mode** (drafts the opener only, nothing else)
+2. **References an existing contact + pastes what the person replied** → **REPLY mode** (draft the next message contextually, stage-aware)
+3. **"list" / "who have I been talking to" / "show my contacts"** → **LIST mode** → run `python3 -m outreach.cli list`
+4. **"due" / "follow-ups" / "what should I do today"** → **DUE mode** → run `python3 -m outreach.cli due`
+5. **References an existing contact and says "I sent this"** → **LOG mode** (just logs, no new drafting)
+6. **References an existing contact and wants to know what to say next (no paste yet)** → **SHOW mode** → run `python3 -m outreach.cli show <id>` then prompt them to paste the reply and route to REPLY mode
+7. **"help me list who's warm" / "i don't know who to message" / "brainstorm my warm contacts"** → **BRAINSTORM mode** (see below)
+8. **Ambiguous** → ask one short question: "who are we messaging, or do you wanna brainstorm a list first?"
 
 If they name a person, run `python3 -m outreach.cli list` first to find the ID.
+
+## The seven conversation stages
+
+Every warm outreach conversation moves through these stages. The tool behaves differently at each one. Students break the warm frame when they skip stages. The tool's job is to never let that happen.
+
+1. **Opener.** First message, ACA structure, all about them. Drafted in NEW CONTACT mode. Never mentions work, product, AI, tech, or the agency.
+2. **Reply catchup.** They replied. Multiple turns of genuine conversation about THEIR life. Drafted in REPLY mode. Still no pivot to work. Uses FORD + mirror-and-pause + 2-3 follow-ups (see `reference/catchup-techniques.md`).
+3. **Casual "what about you?"** They asked about you but it's reflex politeness, not a genuine work question. Drafted in REPLY mode as a **deflection** back to them. One-sentence answer max, then a specific question about their life. Still no Stage 1 answer.
+4. **Genuine work question.** They pushed past the deflection or asked directly about your work ("no but seriously what are you doing now?", "what's the new thing?"). REPLY mode now activates Stage 1: one-sentence outcome-only answer, pulled from `user.work_framings` or `reference/explaining-voice-ai.md`. No mechanism, no tech jargon.
+5. **Curiosity / demo.** They want to know more ("wait how does that work?"). REPLY mode offers the demo link: "honestly easier to show than explain, want me to send a 2-min demo?". No text explanation.
+6. **Post-demo.** They watched and reacted. If they acknowledged it ("that's cool"), the referral ask is fair game (separate message, not bundled). If they went quiet → Stage 7.
+7. **Ghosting / view-no-reply.** 3-5 days of silence → message them about something ELSE in their life, never reference the demo. See `.claude/skills/coach/reference/view-no-reply.md`.
+
+**How the tool figures out which stage the conversation is in:**
+- In REPLY mode, the student pastes what the person said. Read it. Decide:
+  - Did they just share something about themselves (no question)? → Stage 2, ask a follow-up.
+  - Did they ask "how are you?" / "what you been up to?" (polite)? → Stage 3, deflect.
+  - Did they ask directly about your work / push through a deflection? → Stage 4, Stage 1 answer.
+  - Did they respond to the Stage 1 with curiosity? → Stage 5, demo.
+  - Did they react to the demo? → Stage 6.
+  - Have they been silent 3-5 days after a demo? → Stage 7.
+- When in doubt, stay one stage EARLIER. It's better to deflect one more time than to pivot to work prematurely.
 
 ## BRAINSTORM mode
 
@@ -177,31 +200,29 @@ If you're drafting for an acquaintance + no active thread and the draft is missi
 
 ### Step 5: Show + save the drafts
 
-**Display format.** When showing messages to the user, put each distinct message in its own fenced code block. If you're showing multiple messages (e.g. first message, the info-funnel Stage-1 answer, a demo-send line, a referral ask), separate them with a line that says `-- new message line --` so the user knows exactly what to copy as one send and what counts as the next send.
+**Display format.** In NEW CONTACT mode you are only drafting the OPENER. Not the catchup reply, not the Stage-1 answer, not the demo line, not the referral ask. Those get drafted later in REPLY mode when the student comes back with what the person actually said. This prevents the student from pasting a Stage-1 work-line prematurely.
 
-Example save to the drafts folder:
+Put each distinct message in its own fenced code block. The opener is usually one or two lines max. Separate consecutive lines with `-- new message line --`.
+
+Example:
 
 ```
 first message, paste and send now:
 ```
-Jake! Saw you made senior analyst, congrats man. 
+Jake! Saw you made senior analyst, congrats man.
 ```
 -- new message line --
-Consecutive message, on top of the first line
+consecutive message, send right after the first:
 ```
 Three years in and they're already moving you up, you liking it or burnt out?
 ```
--- new message line --
-if they come back with "so what are you up to?", reply with:
-```
-nm, thanks for asking, can you tell me more about your [their thing].
 ```
 
-```
+Do NOT include a pre-written "if they ask what you're up to, reply with X" section. When they reply, the student comes back and types `/outreach` + "they replied with [quote]" and REPLY mode handles it contextually.
 
 **Save to drafts folder.** Write the full draft set to a markdown file in `drafts/` at the repo root. Filename format: `drafts/YYYY-MM-DD_<sanitized_first_name>.md`. If a file for this person already exists today, append a new dated section to it instead of overwriting. Async save the info to the SQL DB, keep in mind we only have these choices for the channels: {'facebook','other', 'telegram', 'instagram', 'whatsapp','email', 'phone', 'sms', 'linkedin'} 
 
-Use this template:
+Use this template (opener only, nothing pre-written for later stages):
 
 ```markdown
 # Draft for [first name] on [platform]
@@ -212,13 +233,11 @@ How known: [how_known]
 <message body>
 
 -- new message line --
-## Second line of the fist message
+## Second line of the first message (if any)
+<message body or omit>
 
--- new message line --
-
-## If they reply and ask what you're up to
-<message body>
-
+---
+**Next step:** When [first name] replies, come back and type `/outreach` + paste what they said. I'll draft the next message based on what they actually wrote.
 ```
 
 The user opens that .md file later when they actually go to send. Terminal output gets lost after a few scrolls.
@@ -243,7 +262,7 @@ python3 -m outreach.cli followup --contact-id <id> --days 3 --note "check for re
 
 ### Step 6: Hand it off
 
-Tell them: the draft is in `drafts/YYYY-MM-DD_<name>.md`, tweak anything that doesn't sound like them, send it manually from their phone / laptop, then come back and type `/outreach` + "I sent it to [name]" or "they replied" to log.
+Tell them: the draft is in `drafts/YYYY-MM-DD_<name>.md`, tweak anything that doesn't sound like them, send it manually from their phone / laptop. When [name] replies, come back and type `/outreach` + paste what they said, and I'll draft the next message based on where the conversation actually is. Don't try to guess it yourself, the whole point is that each reply gets a fresh, contextual response.
 
 ## Handwritten Feel (CRITICAL)
 
@@ -285,23 +304,80 @@ Run `python3 -m outreach.cli due`. For each due follow-up or silent contact:
 
 Surface daily target progress from the cli output.
 
-## LOG mode
+## REPLY mode
 
-Ask:
-- What did you actually send? (full text)
-- Did they reply? If yes, paste it.
+Fires when the student comes back with a reply from one of their contacts and wants the next message drafted. This is the load-bearing mode for keeping conversations human and on-track.
 
-Then:
-- Log the outbound message with `--status sent`.
-- If there's a reply, log with `--direction in --status replied`.
-- Suggest a stage update (see valid stages below).
-- If they're asking what you do, switch to **Information Funnel mode** (see `reference/sales-principles.md`, outcome first, mechanism second, details third) and draft the next message.
+### Step 1: Get the reply + context
 
-Update stage via:
+If they just said "she replied" without the text, ask: "what did she actually say? paste it so I can draft the right response."
+
+Run `python3 -m outreach.cli show <id>` to pull the thread. Log the inbound reply:
+```
+python3 -m outreach.cli log --contact-id <id> --direction in --channel <channel> --body "<reply>" --status replied
+```
+
+### Step 2: Read the reply, figure out the stage
+
+Before drafting anything, read `reference/catchup-techniques.md`. Then classify the reply against the seven stages (see "The seven conversation stages" section up top).
+
+Ask yourself, in this order:
+1. Did they share something about themselves WITHOUT asking about you? → **Stage 2**, catchup. Ask a follow-up about their thing.
+2. Did they ask a polite "how are you? / what you been up to?" (generic)? → **Stage 3**, deflect. One-sentence non-answer + a question about them.
+3. Did they push past a prior deflection or ask DIRECTLY about your work ("what's the new thing you're doing?", "what do you actually do now?")? → **Stage 4**, Stage 1 answer. Outcome only.
+4. Did they reply to a Stage 1 answer with curiosity ("wait how does that work?", "what does that even mean?")? → **Stage 5**, offer demo.
+5. Did they react to a demo ("that's cool", "that's wild")? → **Stage 6**. Acknowledge their reaction first, don't bundle referral ask into same message. The ask comes later as a separate send.
+6. Has it been 3-5 days of silence after a demo? → **Stage 7**, view-no-reply. Message about something ELSE in their life. See `.claude/skills/coach/reference/view-no-reply.md`.
+
+When in doubt between two stages, pick the earlier one. A second deflection never hurt anyone. A premature Stage 1 answer kills the warm frame.
+
+### Step 3: Draft by stage
+
+**Stage 2 (catchup).** Use FORD + mirror-and-pause + 2-3 follow-ups from `reference/catchup-techniques.md`. Ask about THEIR thing. Never match with your own story (don't-equate). The draft is one message, short, curious.
+
+**Stage 3 (deflection).** Template: one-sentence non-answer about you + a specific question about them tied to something you already know. Pull examples from `reference/catchup-techniques.md` "generic greetings" section. Do NOT mention work, AI, tech, the agency, or the product.
+
+**Stage 4 (Stage 1 answer).** Look up `user.work_framings` in `.claude/state/user-profile.json`. If it's an array with 2-3 options, pick the one that best fits this specific contact's world (or if none clearly fit, pick the most neutral). If `work_framings` isn't set, fall back to `reference/explaining-voice-ai.md` elevator answers. Keep it ONE sentence. Outcome only. Don't add the demo offer in the same message, let them respond first.
+
+**Stage 5 (demo).** Short: "honestly easier to show than explain, want me to send you a 2-min demo?" Then, when they say yes, the demo link. See `.claude/skills/coach/reference/demo-examples.md` for which demo to pick.
+
+**Stage 6 (post-demo).** If they reacted positively, draft a natural acknowledgement ("yeah man appreciate you checking it out, been fun building it"). Do NOT bundle the referral ask into this message. The referral ask goes in a separate send after a beat. See `reference/sales-principles.md` for the referral timing.
+
+**Stage 7 (ghosted).** Message about something else in their life. No demo reference. See coach reference.
+
+### Step 4: Show + save + suggest stage update
+
+Show the drafted reply in a fenced code block with the handwritten-feel rules applied (see Handwritten Feel section). Save to the same `drafts/YYYY-MM-DD_<name>.md` file (append a new dated section).
+
+Log the draft:
+```
+python3 -m outreach.cli log --contact-id <id> --direction out --channel <channel> --body "<body>" --status draft
+```
+
+If the thread stage changed (e.g. they watched the demo, so tracker stage should move from `messaged` to `demo_sent`), suggest and run:
 ```
 python3 -m outreach.cli stage <id> <new_stage>
 ```
-Valid stages: new, messaged, replied, demo_sent, discovery_booked, closed, dead.
+Valid tracker stages: new, messaged, replied, demo_sent, discovery_booked, closed, dead.
+
+### Step 5: Hand off
+
+Remind them to come back next time the person replies. Don't try to batch-draft multiple future messages.
+
+## LOG mode
+
+Used when the student just wants to LOG what happened, not draft a new message. Ask:
+- What did you send / what did they say?
+- Which direction (you sent or they replied)?
+
+Then:
+- If outbound: `python3 -m outreach.cli log --contact-id <id> --direction out --channel <channel> --body "<body>" --status sent`
+- If inbound: `python3 -m outreach.cli log --contact-id <id> --direction in --channel <channel> --body "<body>" --status replied`
+- Suggest a tracker stage update if appropriate.
+
+If they paste a reply and clearly want a drafted response, switch to REPLY mode instead of just logging.
+
+Valid tracker stages: new, messaged, replied, demo_sent, discovery_booked, closed, dead.
 
 ## SHOW mode
 
@@ -326,32 +402,20 @@ Run `python3 -m outreach.cli show <id>`. Read the full thread. Recommend the sin
 
 If any check fails, rewrite.
 
-## Information Funnel (when they ask "so what do you do?")
+## When they genuinely ask what you do (Stage 4)
 
-Before drafting a Stage-1 reply, read `reference/explaining-voice-ai.md`. Borrow phrasing from the "One-line elevator answers" list rather than improvising jargon. If the user's profile has a `user.what_they_do_casually` line, prefer that as the anchor and pick one elevator answer that's closest in spirit.
+This used to be called the "Information Funnel". Now it's just Stage 4 in the conversation (see "The seven conversation stages" up top). REPLY mode handles the drafting.
 
-**"How are you?" is NOT the trigger.** Generic greetings like "hey how's it going?", "been ages, how are you?", "what's been happening?" are just conversation. They are NOT asking what you do for work. If you jump into your Stage 1 answer in response to "how are you?", you've skipped the entire catchup and made it about you. The mindset lock-in covers this (Scenario 2): have the catchup first, build goodwill, be genuinely interested in their life. The funnel only opens when they explicitly ask something like "so what do you do now?" or "what are you working on?" after real back-and-forth.
+Quick reminder on what Stage 4 looks like:
+- **Only activates** when they've pushed past a deflection OR asked directly about your work. "How are you?" is NEVER the trigger, see mindset Scenario 2.
+- **Stage 1 answer = one sentence, outcome only.** Pull from `user.work_framings` if present, else `reference/explaining-voice-ai.md` elevator answers.
+  - Good: "I help businesses catch the calls they normally miss. Pretty niche but it's been working."
+  - Bad: "I build voice AI agents on Vapi with custom tool calls..." (mechanism dump)
+  - Bad: "We help dentists reduce no-shows by 40%..." (cold-email DNA)
+- **Don't bundle the demo offer** into the same message. Let them respond to Stage 1 first. If they show curiosity, THEN offer the demo (Stage 5).
+- **Never use the jargon** listed in the "Words and phrases to avoid" section of `reference/explaining-voice-ai.md`.
 
-### The catchup phase (between their first reply and the funnel)
-
-When they reply to your first message, keep the conversation on THEM. Be curious about their life. Reference something from the Acknowledge or from what they mentioned. Ask follow-up questions. This is just being a good friend, not a strategy.
-
-If they casually ask "what about you?" or "so what are you up to?", deflect back to them first. This is natural, not evasive. Example: "nm honestly, thanks for asking though. tell me more about [their thing]." The first casual ask is still part of the catchup, not the funnel trigger.
-
-Only when they push or specifically ask about your work ("no but seriously what are you doing now?", "what's the new job?", "I heard you started something?") does Stage 1 activate.
-
-### The actual funnel (when they genuinely ask what you do)
-
-- **Stage 1 (they asked, you answer):** Outcome only, casual. Pull from the elevator answers in `reference/explaining-voice-ai.md`. If the user's profile has `what_they_do_casually`, use that as the anchor. Keep it one or two sentences. No mechanism, no tech, no jargon.
-  - Good: "I help businesses catch the calls they normally miss when everyone's busy. Pretty niche but it's been working."
-  - Good: "Started my own thing recently, basically a service that makes sure businesses don't lose customers to missed calls. Kinda random but I'm into it."
-  - Bad: "I build voice AI agents on Vapi with custom tool calls..." (mechanism dump, Stage 3 language)
-  - Bad: "We help dentists reduce no-shows by 40%..." (cold-email DNA, "We help X do Y")
-- **They want to know more:** Offer the demo link, don't explain in text. "Honestly easier to show than explain, want me to send you a 2-min demo?"
-- **Stage 2 (demo sent or they asked how it works):** Outcome + high-level mechanism. Lean on the "tell me more" answer in `reference/explaining-voice-ai.md`. Still no jargon, no pricing, no tech stack.
-- **Stage 3 (discovery call):** Full mechanism, pricing, onboarding. Out of scope for this skill, redirect to the VAIB sales course.
-
-Never dump Stage 3 info into Stage 1. Never use the jargon listed in the "Words and phrases to avoid" section of `reference/explaining-voice-ai.md`. See also `reference/sales-principles.md`.
+For the full staging ladder and how REPLY mode handles each stage, see the "REPLY mode" section above and `reference/catchup-techniques.md`.
 
 ## Referral Ask
 

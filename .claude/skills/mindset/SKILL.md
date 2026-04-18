@@ -33,7 +33,7 @@ If `mindset.completed_at` already exists: don't re-run silently. Offer:
 
 > "Alright [first_name]. Before we start, mindset is the biggest blocker in doing warm outreach. It's normal to feel unprepared, unsure and not confident. It's exactly why we're doing this together, to make this easier for you.
 >
-> We're going to talk through three mental shifts most people get wrong at first, plus a couple of scenarios. Ready?"
+> We're going to discuss the three mental shifts most people get wrong at first, plus a couple of scenarios. Ready?"
 
 Wait for confirmation. Then the three mindsets.
 

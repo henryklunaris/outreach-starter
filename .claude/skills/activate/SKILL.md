@@ -72,12 +72,41 @@ Do the sections in order. One section per turn, not all at once. Wait for their 
 
 Get:
 - First name.
-- One sentence of what they're up to (this becomes their Stage-1 info-funnel answer later).
+- One sentence of what they're up to.
 
 > "Alright, quick intro. What's your first name, and in one chill sentence, what are you actually up to or your goal in the AI space? 
 >The one-sentence answer you'd give someone at a BBQ if they asked what you do."
 
-If they give you LinkedIn-voice ("I leverage AI to empower small businesses..."), gently ask them to retry it the way they'd say it to a mate. This field matters because it gets recycled when warm contacts ask "so what are you up to?".
+If they give you LinkedIn-voice ("I leverage AI to empower small businesses..."), gently ask them to retry it the way they'd say it to a mate.
+
+### Work framings (the Stage-4 answer pool)
+
+This is what the student will actually say when a warm contact, many turns into a conversation, finally asks "so what do you do now?". Capture 2-3 options up front so `/outreach` REPLY mode can pick one contextually later instead of improvising jargon.
+
+Don't make them write these from scratch. Using what they said in Intro + `reference/explaining-voice-ai.md` "One-line elevator answers", propose 3 candidate framings and let them tweak or pick.
+
+Rules for each framing:
+- ONE sentence max.
+- Outcome only, no mechanism. "Helps businesses catch calls they miss" not "builds AI voice agents on Vapi".
+- Casual, how they'd say it at a BBQ.
+- No "we help X do Y" cold-email DNA.
+- No buzzwords ("AI", "automation") unless the student really would use that word casually.
+
+Present like this:
+
+> "Here are three ways you could answer when someone eventually asks 'what are you up to?'. Pick the one that feels most you, or tweak them:
+>
+> 1. "I help small businesses catch the calls they'd normally miss. Pretty random but it's been working."
+> 2. "Started my own thing, basically a service that keeps small businesses from losing customers to missed calls."
+> 3. "I'm building a thing that answers business phones when the team can't. Kinda niche but I like it."
+>4. "I work in Voice AI, and it's very diffcult to explain words so I'd prefer to send you an example, here is one: [insert demo]"
+>5. None of these.
+>
+> Keep all three, mix them, or write your own. We can also add a more specific one tied to a type of business you work with most (dentists / contractors / etc) if that's relevant."
+
+Save 2-3 of these in `user.work_framings` (array of strings). If they pick just one, save just one, don't pad the array.
+
+**Keep `user.what_they_do_casually` too.** It's a short one-liner used for summaries and the accountability hook. `work_framings` is the live pool the drafter pulls from. If they only give you one framing, `what_they_do_casually` = that one, and `work_framings` = `[that one]`.
 
 ### Channels
 
@@ -185,6 +214,10 @@ Before saving, show the fingerprint back to the user in plain English, not JSON.
 >
 > **You**: Henry, building AI voice agents for small businesses that miss too many calls.
 >
+> **Work framings** (what you'll say when someone asks "what do you do?"): 
+> 1. "I help small businesses catch the calls they'd normally miss..."
+> 2. "Started my own thing, basically a service that keeps businesses from losing customers..."
+>
 > **Primary channels**: WhatsApp, Instagram. Occasional: LinkedIn, SMS.
 >
 > **Voice**: You type lowercase on WhatsApp and Instagram, sentence case on LinkedIn. Contractions always. Emojis occasional on IG, rare elsewhere. Short messages. You lean on "honestly", "tbh", "haha". You open with "yo" or "hey". You drop periods on casual channels and use "..." to trail off.
@@ -209,7 +242,11 @@ Write the profile to `.claude/state/user-profile.json` using this schema (fill r
   "activated_at": "YYYY-MM-DD",
   "user": {
     "first_name": "Henry",
-    "what_they_do_casually": "building AI voice agents for small businesses that miss too many calls"
+    "what_they_do_casually": "building AI voice agents for small businesses that miss too many calls",
+    "work_framings": [
+      "I help small businesses catch the calls they'd normally miss. Pretty random but it's been working.",
+      "Started my own thing, basically a service that keeps businesses from losing customers to missed calls."
+    ]
   },
   "channels": {
     "primary": ["whatsapp", "instagram"],
@@ -287,5 +324,6 @@ Don't oversell the outreach skill. Don't summarize what the warm outreach workfl
 - [ ] Each tier has at least a `description` and `guidance` (samples may be thin but not empty unless user truly refused)
 - [ ] Raw samples, if the user provided them, are stored verbatim and not rewritten
 - [ ] `voice.avoid_phrases` reflects what the user actually said
+- [ ] `user.work_framings` is an array of 1-3 one-sentence outcome-only framings, no mechanism or buzzwords
 
 If any fails, fix before writing.
