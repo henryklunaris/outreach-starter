@@ -202,43 +202,44 @@ If you're drafting for an acquaintance + no active thread and the draft is missi
 
 **Display format.** In NEW CONTACT mode you are only drafting the OPENER. Not the catchup reply, not the Stage-1 answer, not the demo line, not the referral ask. Those get drafted later in REPLY mode when the student comes back with what the person actually said. This prevents the student from pasting a Stage-1 work-line prematurely.
 
-Put each distinct message in its own fenced code block. The opener is usually one or two lines max. Separate consecutive lines with `-- new message line --`.
+Put each distinct message in its own fenced code block so the student can copy it cleanly. The opener is usually one or two lines max. Separate consecutive lines with `**-- new message line --**`. Don't add descriptive labels between the blocks, the separator does the work.
 
-Example:
+Example of what the student sees in chat:
 
-```
-first message, paste and send now:
 ```
 Jake! Saw you made senior analyst, congrats man.
 ```
--- new message line --
-consecutive message, send right after the first:
+
+**-- new message line --**
+
 ```
 Three years in and they're already moving you up, you liking it or burnt out?
 ```
-```
 
-Do NOT include a pre-written "if they ask what you're up to, reply with X" section. When they reply, the student comes back and types `/outreach` + "they replied with [quote]" and REPLY mode handles it contextually.
+Do NOT include a pre-written "if they ask what you're up to, reply with X" section. When they reply, the student comes back and pastes what they said, and REPLY mode handles it contextually.
 
 **Save to drafts folder.** Write the full draft set to a markdown file in `drafts/` at the repo root. Filename format: `drafts/YYYY-MM-DD_<sanitized_first_name>.md`. If a file for this person already exists today, append a new dated section to it instead of overwriting. Async save the info to the SQL DB, keep in mind we only have these choices for the channels: {'facebook','other', 'telegram', 'instagram', 'whatsapp','email', 'phone', 'sms', 'linkedin'} 
 
-Use this template (opener only, nothing pre-written for later stages):
+Use this template (opener only, nothing pre-written for later stages). Plain message text, no `## First message` subheadings, no step numbering. The draft file should read like the actual messages the student is about to paste, not a report about them.
 
 ```markdown
 # Draft for [first name] on [platform]
+
 Generated: [ISO timestamp]
 How known: [how_known]
 
-## First message (first line)
-<message body>
+<message body, line 1>
 
--- new message line --
-## Second line of the first message (if any)
-<message body or omit>
+**-- new message line --**
+
+<message body, line 2 (if any)>
 
 ---
-**Next step:** When [first name] replies, come back and type `/outreach` + paste what they said. I'll draft the next message based on what they actually wrote.
+
+**Next step:** When [first name] replies, come back here and tell me what she said.
 ```
+
+If there's only one line to the opener, omit the second block entirely. Don't force a second line.
 
 The user opens that .md file later when they actually go to send. Terminal output gets lost after a few scrolls.
 
@@ -262,7 +263,7 @@ python3 -m outreach.cli followup --contact-id <id> --days 3 --note "check for re
 
 ### Step 6: Hand it off
 
-Tell them: the draft is in `drafts/YYYY-MM-DD_<name>.md`, tweak anything that doesn't sound like them, send it manually from their phone / laptop. When [name] replies, come back and type `/outreach` + paste what they said, and I'll draft the next message based on where the conversation actually is. Don't try to guess it yourself, the whole point is that each reply gets a fresh, contextual response.
+Tell them: the draft is in `drafts/YYYY-MM-DD_<name>.md`, tweak anything that doesn't sound like them, send it manually from their phone / laptop. When [name] replies, come back here and tell me what she said, and I'll draft the next message based on where the conversation actually is. Don't try to guess it yourself, the whole point is that each reply gets a fresh, contextual response.
 
 ## Handwritten Feel (CRITICAL)
 
