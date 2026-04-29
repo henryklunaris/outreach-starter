@@ -52,24 +52,28 @@ From their reply, route:
 
 If they name a person, run `python3 -m outreach.cli list` first to find the ID.
 
+## The main rule
+The stages below are used to help you know what to do at each stage, but the fallback should always be a genuine conversation, you are leading the conversation, so we must always ask the warm lead questions to help trigger their feeling of self-importance. This also means that the conversation doesn't have a specific amount of turns of stages, it could be three or twenty eight turns... the idea is to keep the conversation going until it feels right to send them the demo.
+
 ## The seven conversation stages
 
 Every warm outreach conversation moves through these stages. The tool behaves differently at each one. Students break the warm frame when they skip stages. The tool's job is to never let that happen.
 
 1. **Opener.** First message, ACA structure, all about them. Drafted in NEW CONTACT mode. Never mentions work, product, AI, tech, or the agency.
 2. **Reply catchup.** They replied. Multiple turns of genuine conversation about THEIR life. Drafted in REPLY mode. Still no pivot to work. Uses FORD + mirror-and-pause + 2-3 follow-ups (see `reference/catchup-techniques.md`).
-3. **Casual "what about you?"** They asked about you but it's reflex politeness, not a genuine work question. Drafted in REPLY mode as a **deflection** back to them. One-sentence answer max, then a specific question about their life. Still no Stage 1 answer.
-4. **Genuine work question.** They pushed past the deflection or asked directly about your work ("no but seriously what are you doing now?", "what's the new thing?"). REPLY mode now activates Stage 1: one-sentence outcome-only answer, pulled from `user.work_framings` or `reference/explaining-voice-ai.md`. No mechanism, no tech jargon.
-5. **Curiosity / demo.** They want to know more ("wait how does that work?"). REPLY mode offers the demo link: "honestly easier to show than explain, want me to send a 2-min demo?". No text explanation.
-6. **Post-demo.** They watched and reacted. If they acknowledged it ("that's cool"), the referral ask is fair game (separate message, not bundled). If they went quiet → Stage 7.
-7. **Ghosting / view-no-reply.** 3-5 days of silence → message them about something ELSE in their life, never reference the demo. See `.claude/skills/coach/reference/view-no-reply.md`.
+3. Keep the conversation going using ACA/FORD frameworks whenever possible and makes sense after the intial catch up. We keep doing this until the user reaches the 5th of 6th area of the conversation.
+4. **Casual "what about you?"** They asked about you but it's reflex politeness, not a genuine work question. Drafted in REPLY mode as a **deflection** back to them. One-sentence answer max, then a specific question about their life. Still no Stage 1 answer.
+5. **Genuine work question.** They pushed past the deflection or asked directly about your work ("no but seriously what are you doing now?", "what's the new thing?"). REPLY mode now activates Stage 1: one-sentence outcome-only answer, pulled from `user.work_framings` or `reference/explaining-voice-ai.md`. No mechanism, no tech jargon.
+6. **Curiosity / demo.** They want to know more ("wait how does that work?"). REPLY mode offers the demo link: "honestly easier to show than explain, want me to send a 2-min demo?". No text explanation.
+7. **Post-demo.** They watched and reacted. If they acknowledged it ("that's cool"), the referral ask is fair game (separate message, not bundled). If they went quiet → Stage 7.
+8. **Ghosting / view-no-reply.** 3-5 days of silence → message them about something ELSE in their life, never reference the demo. See `.claude/skills/coach/reference/view-no-reply.md`.
 
 **How the tool figures out which stage the conversation is in:**
 - In REPLY mode, the student pastes what the person said. Read it. Decide:
-  - Did they just share something about themselves (no question)? → Stage 2, ask a follow-up.
-  - Did they ask "how are you?" / "what you been up to?" (polite)? → Stage 3, deflect.
+  - Did they just share something about themselves (no question)? → Stage 3, ask a follow-up.
+  - Did they ask "how are you?" / "what you been up to?" (polite)? → Stage 4, deflect.
   - Did they ask directly about your work / push through a deflection? → Stage 4, Stage 1 answer.
-  - Did they respond to the Stage 1 with curiosity? → Stage 5, demo.
+  - Did they respond to the Stage 1 with curiosity? → Stage 5 demo.
   - Did they react to the demo? → Stage 6.
   - Have they been silent 3-5 days after a demo? → Stage 7.
 - When in doubt, stay one stage EARLIER. It's better to deflect one more time than to pivot to work prematurely.
